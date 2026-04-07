@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Source {
+  AMBITO
+  CRONISTA
+  REUTERS
+  INVESTING
+  OTHER
+}
+
+enum Sentiment {
+  POSITIVE
+  NEGATIVE
+  NEUTRAL
+}
+
+enum Impact {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Sector {
+  BANKING
+  ENERGY
+  AGRICULTURE
+  TECHNOLOGY
+  CURRENCY
+  BONDS
+  REAL_ESTATE
+  GENERAL
+}
+
+enum AlertStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts        Account[]
+  sessions        Session[]
+  alertPreference AlertPreference?
+  emailAlerts     EmailAlert[]
+
+  @@index([email])
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model NewsArticle {
+  id          String    @id @default(cuid())
+  title       String
+  summary     String?
+  content     String?
+  url         String    @unique
+  slug        String    @unique
+  publishedAt DateTime
+  source      Source
+  sentiment   Sentiment?
+  impact      Impact?
+  sector      Sector?
+  confidence  Float?
+  reasoning   String?
+  keywords    String[]
+  processed   Boolean   @default(false)
+  isImportant Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  emailAlerts EmailAlert[]
+
+  @@index([publishedAt(sort: Desc)])
+  @@index([impact])
+  @@index([source])
+  @@index([sentiment])
+  @@index([sector])
+  @@index([isImportant])
+  @@index([processed])
+}
+
+model AlertPreference {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  sectors   Sector[]
+  minImpact Impact   @default(HIGH)
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmailAlert {
+  id        String      @id @default(cuid())
+  userId    String
+  articleId String
+  status    AlertStatus @default(PENDING)
+  sentAt    DateTime?
+  error     String?
+  createdAt DateTime    @default(now())
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article NewsArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([articleId])
+  @@index([status])
+}

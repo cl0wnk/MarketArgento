@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 0% 0%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 0%;
+    --input: 0 0% 0%;
+    --ring: 0 0% 0%;
+    --radius: 0px;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 0% 100%;
+    --destructive-foreground: 0 0% 0%;
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
+    --ring: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    border-radius: 0 !important;
+  }
+  
+  html {
+    @apply antialiased scroll-smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans min-h-screen selection:bg-black selection:text-white;
+  }
+
+  /* Sharp Focus Ring */
+  :focus-visible {
+    @apply outline-none ring-1 ring-foreground ring-offset-0;
+  }
+
+  /* Headlines - Serif */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-bold tracking-tight text-black dark:text-white;
+  }
+
+  /* Metadata - Monospace */
+  code, pre, .mono {
+    @apply font-mono text-xs uppercase tracking-widest;
+  }
+}
+
+/* Custom Scrollbar - Sharp & Dark */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-foreground;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-zinc-800;
+}
+
+/* Mechanical Transitions */
+.mechanical-transition {
+  transition: all 150ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.invert-on-hover:hover {
+  @apply bg-foreground text-background;
+}
+
+/* Hairline Rules */
+.hairline {
+  @apply border-b border-black/10 dark:border-white/10;
+}
+
+.heavy-rule {
+  @apply border-b-[4px] border-black dark:border-white;
+}

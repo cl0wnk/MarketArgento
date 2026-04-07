@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(mkdir -p \"F:/MarketArgento.com/src/app/\\(public\\)/news/[slug]\")",
+      "Bash(mkdir -p \"F:/MarketArgento.com/src/app/api/auth/[...nextauth]\")"
+    ]
+  }
+}
